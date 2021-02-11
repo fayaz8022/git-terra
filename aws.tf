@@ -3,9 +3,9 @@ provider "aws" {
 }
 
 resource "aws_instance" "testterrafrom" {
-  ami           = "ami-08e0ca9924195beba"
+     ami = "ami-08e0ca9924195beba"
   instance_type = "t2.micro"
-  user_data     = <<-EOF
+   user_data = <<-EOF
              #!/bin/bash
              yum install java -y
              yum install wget -y
