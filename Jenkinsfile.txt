@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git') {
+            steps {
+             git changelog: false, poll: false, url: 'https://github.com/fayaz8022/devops_pipline.git'
+            }
+        }
+        stage('maven') {
+            steps {
+             bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+        stage('docker') {
+            steps {
+              bat "docker build -t  myspringboot . "
+              bat "docker run -d -p 8086:8080 -t myspringboot" 
+            }
+        }
+        stage('tomcat contianer') {
+            steps {
+             deploy adapters: [tomcat9(credentialsId: '32362576-38a0-4d15-9a94-c7b497fae354', path: '', url: 'http://localhost:8085/')], contextPath: 'pipeline', onFailure: false, war: '**/*.war'
+            }
+        } 
+        stage('terraform') {
+            steps {
+             bat "terraform plan"
+            }
+        } 
+    }
+}
